@@ -35,4 +35,4 @@
   lineinfile:
     dest=/etc/hosts
     line={{ item }}
-  with_items: "{{node_ip_list}}"
+  with_items: '{{node_ip_list}}'
