@@ -1,0 +1,38 @@
+- name: set ssh pub key to authorized_keys
+  copy: src=files/authorized_keys dest={{ homepath }}/.ssh/authorized_keys mode=644
+
+- name: set ssh priv key
+  copy: dest={{ homepath }}/.ssh/id_rsa mode=644
+        src="{{ ansible_ssh_private_key_file}}"
+
+- name: modify sshd_config
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    backrefs: yes
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+    - regexp: '^#?\s*Port'
+      line: 'Port 22'
+    - regexp: '^#?\s*PermitRootLogin'
+      line: 'PermitRootLogin no'
+    - regexp: '^PasswordAuthentication yes'
+      line: 'PasswordAuthentication no'
+    - regexp: '^#?\s*PubkeyAuthentication'
+      line: 'PubkeyAuthentication yes'
+
+- name: restart sshd
+  become: yes
+  service:
+    name: sshd
+    state: restarted
+    enabled: yes
+
+
+- name: add nodes in /etc/hosts
+  become: yes
+  lineinfile:
+    dest=/etc/hosts
+    line={{ item }}
+  with_items: "{{node_ip_list}}"

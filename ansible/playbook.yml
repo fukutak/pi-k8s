@@ -1,0 +1,7 @@
+---
+- hosts: cluster_nodes
+  become: true
+  roles:
+    - { role: settings }
+  vars:
+    - homepath: /home/pi
