@@ -1,0 +1,45 @@
+- name: swap off
+  become: yes
+  shell: '{{ item }}'
+  with_items:
+    - swapoff --all
+    - systemctl stop dphys-swapfile
+    - systemctl disable dphys-swapfile
+
+# - name: Disable swap permanently, persist reboots
+#   replace:
+#     path: /etc/fstab
+#     regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
+#     replace: '#\1\2\3swap\4'
+#     backup: yes 
+
+- name: download docker
+  get_url:
+    url: https://get.docker.com
+    dest: /tmp/get-docker.sh
+    mode: a+x
+  become: true
+- name: install docker
+  shell: creates=/usr/bin/docker /tmp/get-docker.sh
+  become: true
+- name: add pi to docker group
+  user: name=pi append=yes groups=docker
+  become: true
+- name: docker restarted
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+- name: install python-pip
+  apt: name={{ item }} state=present
+  with_items:
+    - python-pip
+  become: true
+
+## not worked for python2
+# - name: install docker-compose
+#   pip:
+#     name: docker-compose
+#   become: 
+
+# install kubelet, kubeadm, kubectl
