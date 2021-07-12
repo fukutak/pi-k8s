@@ -13,15 +13,40 @@
 #     replace: '#\1\2\3swap\4'
 #     backup: yes 
 
-- name: download docker
-  get_url:
-    url: https://get.docker.com
-    dest: /tmp/get-docker.sh
-    mode: a+x
-  become: true
-- name: install docker
-  shell: creates=/usr/bin/docker /tmp/get-docker.sh
-  become: true
+# - name: download docker
+#   get_url:
+#     url: https://get.docker.com
+#     dest: /tmp/get-docker.sh
+#     mode: a+x
+#   become: true
+# - name: install docker
+#   shell: creates=/usr/bin/docker /tmp/get-docker.sh
+#   become: true
+# - name: apt update
+#   apt:
+#     update_cache: yes
+# - name: docker install specific version
+#   apt:
+#     update_cache: yes
+#     name: '{{ item }}'
+#     state: "present"
+#     with_items:
+#       - apt-transport-https
+#       - ca-certificates
+#       - curl
+#       - software-properties-common
+#       - gnupg2
+
+- name: docker install specific version
+  apt:
+    name: '{{ item }}'
+    state: "present"
+    update_cache: yes
+    force: yes
+  with_items:
+    - docker-ce=5:19.03.11~3-0~raspbian-buster
+    - docker-ce-cli=5:19.03.11~3-0~raspbian-buster
+    - containerd.io
 - name: add pi to docker group
   user: name=pi append=yes groups=docker
   become: true

@@ -1,5 +1,5 @@
 # Let's make kubernetes cluster using raspberry-pi
-## construction
+## Construction
 - raspberry pi 4 model 8GB * 1 (for control plane)
 - raspberry pi 4 model 4GB * 2 (for worker)
 
@@ -15,10 +15,12 @@ set up sshd_config and put key to ssh for each nodes.
 
 
 ### k8s_prepare
-install docker in each nodes.
-- swap off requred [k8s setup](https://kubernetes.io/ja/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
-- docker install
+- swap off required [k8s setup](https://kubernetes.io/ja/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+- install docker as CRI
+- install kubeadm, kubelet, kubectl
+  
 
+### Usage
 ```
 cd ansible
 ansible-playbook  -i inventory/inventory.yml playbook.yml
