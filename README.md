@@ -2,6 +2,29 @@
 ## Construction
 - raspberry pi 4 model 8GB * 1 (for control plane)
 - raspberry pi 4 model 4GB * 2 (for worker)
+## first raspi setup
+```
+raspi-config
+---
+change hostname
+expand memory
+set localization
+---
+sudo reboot
+```
+ssh after reboot again
+```
+sudo nano /boot/cmdline.txt
+---append below---
+cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1
+---
+sudo reboot
+```
+```
+cat /proc/cgroups
+---check memory---
+memory	6	94	1
+```
 
 ## Ansible
 ### roles: setup
@@ -13,15 +36,50 @@ set up sshd_config and put key to ssh for each nodes.
   - off passwd auth.
 - add nodes in /etc/hosts to ssh each nodes
 
-
-### k8s_prepare
+### roles: k8s_prepare
 - swap off required [k8s setup](https://kubernetes.io/ja/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 - install docker as CRI
 - install kubeadm, kubelet, kubectl
-  
 
 ### Usage
 ```
+git clone https://github.com/fukutak/k8s.git
 cd ansible
 ansible-playbook  -i inventory/inventory.yml playbook.yml
 ```
+
+## Build k8s cluster using kubeadm
+In master node. [[ref](https://qiita.com/sotoiwa/items/e350579d4c81c4a65260)]
+```
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+---log---
+Your Kubernetes control-plane has initialized successfully!
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join <control-plane-host>:<control-plane-port> --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+```
+install flannel [[ref](https://qiita.com/kentarok/items/6e818c2e6cf66c55f19a)]
+```
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
+kubectl get pods --all-namespaces | grep coredns # confirm coredns is running.
+```
+join worker nodes to k8s cluster!
+```
+sudo kubeadm join <control-plane-host>:<control-plane-port> --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+```
+refs:
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
