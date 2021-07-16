@@ -83,3 +83,25 @@ sudo kubeadm join <control-plane-host>:<control-plane-port> --token <token> --di
 ```
 refs:
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+
+## Install ingress-nginx
+ref: https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-manifests/
+```
+git clone https://github.com/nginxinc/kubernetes-ingress/
+cd kubernetes-ingress/deployments/
+git checkout v1.12.0
+---
+kubectl apply -f common/ns-and-sa.yaml
+kubectl apply -f rbac/rbac.yaml
+```
+
+
+## kubernetes dashboard UI
+pending below.
+
+in master node. (https://kubernetes.io/ja/docs/tasks/access-application-cluster/web-ui-dashboard/)
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+kubectl proxy
+```
+access: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/

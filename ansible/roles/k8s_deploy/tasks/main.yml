@@ -1,0 +1,8 @@
+- name: put manifest.yml on home.
+  copy: dest={{ homepath }}/manigfest.yml
+        src=../../../k8s_manifest/manifest.yml
+
+# - name: Apply manifest to the cluster.
+#   community.kubernetes.k8s:
+#     state: present
+#     src: ~/manifest.yml
