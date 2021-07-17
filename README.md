@@ -93,9 +93,49 @@ git checkout v1.12.0
 ---
 kubectl apply -f common/ns-and-sa.yaml
 kubectl apply -f rbac/rbac.yaml
+---
+kubectl apply -f common/default-server-secret.yaml
+kubectl apply -f common/nginx-config.yaml
+kubectl apply -f common/ingress-class.yaml
+---
+kubectl apply -f common/crds/k8s.nginx.org_virtualservers.yaml
+kubectl apply -f common/crds/k8s.nginx.org_virtualserverroutes.yaml
+kubectl apply -f common/crds/k8s.nginx.org_transportservers.yaml
+kubectl apply -f common/crds/k8s.nginx.org_policies.yaml
+---
+kubectl apply -f common/crds/k8s.nginx.org_globalconfigurations.yaml
+---
+kubectl apply -f common/crds/appprotect.f5.com_aplogconfs.yaml
+kubectl apply -f common/crds/appprotect.f5.com_appolicies.yaml
+kubectl apply -f common/crds/appprotect.f5.com_apusersigs.yaml
+---
+kubectl apply -f deployment/nginx-ingress.yaml
+---
+kubectl get pods --namespace=nginx-ingress
 ```
 
+uninstall
+```
+kubectl delete namespace nginx-ingress
+kubectl delete clusterrole nginx-ingress
+kubectl delete clusterrolebinding nginx-ingress
+kubectl delete -f common/crds/
+```
 
+ref: https://datatechnologylab.readthedocs.io/ja/latest/container/Level4/ingress/ingress.html
+helm install
+```
+sudo apt update
+sudo apt install snapd
+sudo reboot
+sudo snap install core
+sudo snap install helm --classic
+```
+pod内で資材の確認を行う場合は下記
+```
+kubectl exec my-nginx-76f4546447-8r57w -i -t -- bash -il
+```
+`/tmp/build`配下にpodのnginxのドキュメントルートを設定したので、資材を配置しないといけない。
 ## kubernetes dashboard UI
 pending below.
 
