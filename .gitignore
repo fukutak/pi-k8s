@@ -1,1 +1,2 @@
 ansible/roles/settings/files/
+ansible/roles/index_deploy/files

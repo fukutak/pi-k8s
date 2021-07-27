@@ -1,15 +1,25 @@
 ---
+# install系
 # - hosts: cluster_nodes
 #   become: true
 #   roles:
-#     - { role: setup }
+#    #  - { role: setup }
 #     - { role: k8s_prepare }
 #   vars:
 #     - homepath: /home/pi
 
+# manifestファイルの転送とindexファイルの転送
 - hosts: masters
   become: true
   roles:
     - {role: k8s_deploy}
+  vars:
+    - homepath: /home/pi
+
+# reactのindexをコピーしてraspiの/tmp/buildに配置する
+- hosts: workers
+  become: true
+  roles:
+    - {role: index_deploy}
   vars:
     - homepath: /home/pi

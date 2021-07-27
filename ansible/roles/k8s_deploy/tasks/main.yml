@@ -8,7 +8,3 @@
 #   community.kubernetes.k8s:
 #     state: present
 #     src: ../../../k8s_manifest/ # ~/manifest.yml
-
-# - name: copy index.html
-#   copy: dest=/tmp/build
-#         src=files/build/

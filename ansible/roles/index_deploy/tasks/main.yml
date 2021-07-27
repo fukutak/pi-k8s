@@ -1,0 +1,4 @@
+- name: copy index.html
+  copy: dest=/tmp/build
+        src=files/build/
+  become: true

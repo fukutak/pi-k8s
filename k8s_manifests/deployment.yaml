@@ -1,8 +1,9 @@
 ---
+# Volumeをマウントする領域の確保
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: task-pv-volume
+  name: docroot
   labels:
     type: local
 spec:
@@ -14,10 +15,11 @@ spec:
   hostPath:
     path: "/tmp/build"
 ---
+# Volumeを要求してあう領域を確保する
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: task-pv-claim
+  name: docroot-claim
 spec:
   storageClassName: manual
   accessModes:
@@ -26,6 +28,23 @@ spec:
     requests:
       storage: 2Gi
 ---
+# NginxのconfigMapの作成
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+  nginx.conf: |
+    server {
+      listen     80;
+      server_tokens on;
+      location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+      }
+    }
+---
+# Deploymentの定義
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,7 +53,7 @@ spec:
   selector:
     matchLabels:
       run: my-nginx
-  replicas: 4
+  replicas: 10
   template:
     metadata:
       labels:
@@ -55,5 +74,21 @@ spec:
             name: nginx-conf
         - name: docroot
           persistentVolumeClaim:
-            claimName: task-pv-claim
+            claimName: docroot-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx
+  labels:
+    run: my-nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30000
+    protocol: TCP
+  selector:
+    run: my-nginx
 ---
