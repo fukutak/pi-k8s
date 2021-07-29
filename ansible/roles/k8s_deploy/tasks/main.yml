@@ -1,6 +1,6 @@
 - name: put manifest.yml on home.
   copy: dest={{ homepath }}/
-        src=../../../k8s_manifests/manifest.yaml
+        src=../../../k8s_manifests/manifest.yml
 
 # - name: chmod 755 apply.sh
 #   file: path={{ homepath }}/k8s_manifests/apply.sh mode=0755
