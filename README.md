@@ -85,6 +85,7 @@ refs:
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
 
 ## Install ingress-nginx
+### Method 1
 ref: https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-manifests/
 ```
 git clone https://github.com/nginxinc/kubernetes-ingress/
@@ -121,7 +122,7 @@ kubectl delete clusterrole nginx-ingress
 kubectl delete clusterrolebinding nginx-ingress
 kubectl delete -f common/crds/
 ```
-
+### Method 2
 ref: https://datatechnologylab.readthedocs.io/ja/latest/container/Level4/ingress/ingress.html
 helm install
 ```
@@ -136,6 +137,23 @@ pod内で資材の確認を行う場合は下記
 kubectl exec my-nginx-76f4546447-8r57w -i -t -- bash -il
 ```
 `/tmp/build`配下にpodのnginxのドキュメントルートを設定したので、資材を配置しないといけない。
+
+## Method 3
+ref: https://kubernetes.github.io/ingress-nginx/deploy/
+ref: https://qiita.com/prodigy413/items/b26bac84bbb4555ac8f0
+```
+$ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+$ helm repo update
+
+$ helm search repo ingress-nginx/ingress-nginx
+$ kubectl create ns ingress-system
+$ helm install nginx-ingress ingress-nginx/ingress-nginx -n ingress-system # --set "controller.extraArgs.enable-ssl-passthrough=true"
+$ helm list -n ingress-system
+kubectl get deploy -n ingress-system
+kubectl get pod -n ingress-system
+kubectl get sa -n ingress-system
+
+```
 ## kubernetes dashboard UI
 pending below.
 
@@ -145,3 +163,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/a
 kubectl proxy
 ```
 access: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+
+
+## Crush pod Flannel
+ref: https://qiita.com/aki5151/items/172848d403e89f5f4e0f

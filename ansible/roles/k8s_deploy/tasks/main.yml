@@ -1,10 +1,11 @@
 - name: put manifest.yml on home.
-  copy: dest={{ homepath }}/k8s_manifests/
-        src=../../../k8s_manifests/
+  copy: dest={{ homepath }}/
+        src=../../../k8s_manifests/manifest.yaml
 
-- name: chmod 755 apply.sh
-  file: path={{ homepath }}/k8s_manifests/apply.sh mode=0755
+# - name: chmod 755 apply.sh
+#   file: path={{ homepath }}/k8s_manifests/apply.sh mode=0755
+
 # - name: Apply manifest to the cluster.
 #   community.kubernetes.k8s:
 #     state: present
-#     src: ../../../k8s_manifest/ # ~/manifest.yml
+#     src: ../../../k8s_manifest/manifest.yaml

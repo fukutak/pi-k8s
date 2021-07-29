@@ -4,7 +4,7 @@
 #   become: true
 #   roles:
 #    #  - { role: setup }
-#     - { role: k8s_prepare }
+#    #  - { role: k8s_prepare }
 #   vars:
 #     - homepath: /home/pi
 
@@ -20,6 +20,6 @@
 - hosts: workers
   become: true
   roles:
-    - {role: index_deploy}
+   #  - {role: index_deploy}
   vars:
     - homepath: /home/pi

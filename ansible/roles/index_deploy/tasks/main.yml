@@ -1,4 +1,4 @@
 - name: copy index.html
-  copy: dest=/tmp/build
+  copy: dest=/home/pi/build
         src=files/build/
   become: true

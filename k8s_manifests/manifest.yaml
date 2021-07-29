@@ -12,8 +12,9 @@ spec:
     storage: 5Gi
   accessModes:
     - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: "/tmp/build"
+    path: "/home/pi/build"
 ---
 # Volumeを要求してあう領域を確保する
 apiVersion: v1
@@ -53,7 +54,7 @@ spec:
   selector:
     matchLabels:
       run: my-nginx
-  replicas: 10
+  replicas: 4
   template:
     metadata:
       labels:
@@ -65,14 +66,14 @@ spec:
           volumeMounts:
           - name: conf
             mountPath: /etc/nginx/conf.d/
-          - name: docroot
+          - name: docrootc
             mountPath: /usr/share/nginx/html
             readOnly: true
       volumes:
         - name: conf
           configMap:
             name: nginx-conf
-        - name: docroot
+        - name: docrootc
           persistentVolumeClaim:
             claimName: docroot-claim
 ---
@@ -92,3 +93,43 @@ spec:
   selector:
     run: my-nginx
 ---
+# WIP
+---
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: ingress-system
+# ---
+# service経由でnodeにきた外部からのリクエストを通す、ポートフォワードしている
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: nginx-service
+# spec:
+#   type: NodePort
+#   selector:
+#     app: test-nginx
+#   ports:
+#   - port: 80
+#     targetPort: 80
+#     nodePort: 30000
+
+# nodeに直接リクエストするのではなく、lbを使ってリクエストを捌くようにする
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: minimal-ingress
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+# spec:
+#   rules:
+#   - host: pi-master
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: my-nginx
+#             port:
+#               number: 80
