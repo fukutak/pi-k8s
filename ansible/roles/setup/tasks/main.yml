@@ -1,11 +1,11 @@
-- name: set ssh pub key to authorized_keys
+- name: Set ssh pub key to authorized_keys
   copy: src=files/authorized_keys dest={{ homepath }}/.ssh/authorized_keys mode=644
 
-- name: set ssh priv key
+- name: Set ssh priv key
   copy: dest={{ homepath }}/.ssh/id_rsa mode=644
         src="{{ ansible_ssh_private_key_file}}"
 
-- name: modify sshd_config
+- name: Modify sshd_config
   lineinfile:
     dest: /etc/ssh/sshd_config
     state: present
@@ -22,17 +22,23 @@
     - regexp: '^#?\s*PubkeyAuthentication'
       line: 'PubkeyAuthentication yes'
 
-- name: restart sshd
+- name: Restart sshd
   become: yes
   service:
     name: sshd
     state: restarted
     enabled: yes
 
-
-- name: add nodes in /etc/hosts
+- name: Regist nodes in /etc/hosts.
   become: yes
   lineinfile:
     dest=/etc/hosts
     line={{ item }}
   with_items: '{{node_ip_list}}'
+
+- name: Change python's version from 2 to 3.
+  become: yes
+  shell: |
+    cd /usr/bin
+    unlink python
+    ln -s python3 python
