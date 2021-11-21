@@ -1,2 +1,2 @@
 #!/bin/bash
-kubectl apply -f manigest.yml
+/usr/bin/kubectl apply -f /home/pi/k8s_manifests/manifest.yml
