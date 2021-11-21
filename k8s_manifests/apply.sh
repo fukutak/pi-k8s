@@ -1,2 +1,2 @@
 #!/bin/bash
-kubectl apply -f manigest.yaml
+kubectl apply -f manigest.yml

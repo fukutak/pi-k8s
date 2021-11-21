@@ -84,76 +84,58 @@ sudo kubeadm join <control-plane-host>:<control-plane-port> --token <token> --di
 refs:
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
 
-## Install ingress-nginx
-### Method 1
-ref: https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-manifests/
+## WIP: Install ingress-nginx
+ref: https://hawksnowlog.blogspot.com/2021/02/getting-started-kubernetes-nginx-ingress-controller.html
+
+### WIP: 1. install nginx-ingress controller
 ```
+# nginx ingress controller
 git clone https://github.com/nginxinc/kubernetes-ingress/
-cd kubernetes-ingress/deployments/
-git checkout v1.12.0
----
+cd kubernetes-ingress/deployments
+git checkout v1.10.0
+
+# RBAC
 kubectl apply -f common/ns-and-sa.yaml
 kubectl apply -f rbac/rbac.yaml
----
+kubectl apply -f rbac/ap-rbac.yaml
+
+# nginx
 kubectl apply -f common/default-server-secret.yaml
 kubectl apply -f common/nginx-config.yaml
 kubectl apply -f common/ingress-class.yaml
----
+
+# カスタムリソース共通
 kubectl apply -f common/crds/k8s.nginx.org_virtualservers.yaml
 kubectl apply -f common/crds/k8s.nginx.org_virtualserverroutes.yaml
 kubectl apply -f common/crds/k8s.nginx.org_transportservers.yaml
 kubectl apply -f common/crds/k8s.nginx.org_policies.yaml
----
 kubectl apply -f common/crds/k8s.nginx.org_globalconfigurations.yaml
----
-kubectl apply -f common/crds/appprotect.f5.com_aplogconfs.yaml
-kubectl apply -f common/crds/appprotect.f5.com_appolicies.yaml
-kubectl apply -f common/crds/appprotect.f5.com_apusersigs.yaml
----
+
+# ingress controllerのデプロイ
 kubectl apply -f deployment/nginx-ingress.yaml
----
-kubectl get pods --namespace=nginx-ingress
+kubectl apply -f daemon-set/nginx-ingress.yaml
+
+# serviceのデプロイ
+kubectl create -f service/nodeport.yaml
+```
+確認
+```
+pi@pi-master:~/kubernetes-ingress/deployments $ kubectl get svc -n nginx-ingress
+NAME            TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+nginx-ingress   NodePort   10.102.173.144   <none>        80:30586/TCP,443:30780/TCP   10s
+pi@pi-master:~/kubernetes-ingress/deployments $ kubectl get pods --namespace=nginx-ingress
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-ingress-5bkl7             0/1     Running   0          40s
+nginx-ingress-dfbd55d95-9twn9   0/1     Running   1          43s
+nginx-ingress-phqxk             0/1     Running   1          40s
 ```
 
-uninstall
-```
-kubectl delete namespace nginx-ingress
-kubectl delete clusterrole nginx-ingress
-kubectl delete clusterrolebinding nginx-ingress
-kubectl delete -f common/crds/
-```
-### Method 2
-ref: https://datatechnologylab.readthedocs.io/ja/latest/container/Level4/ingress/ingress.html
-helm install
-```
-sudo apt update
-sudo apt install snapd
-sudo reboot
-sudo snap install core
-sudo snap install helm --classic
-```
-pod内で資材の確認を行う場合は下記
-```
-kubectl exec my-nginx-76f4546447-8r57w -i -t -- bash -il
-```
-`/tmp/build`配下にpodのnginxのドキュメントルートを設定したので、資材を配置しないといけない。
+### 2. create ingress resource
 
-## Method 3
-ref: https://kubernetes.github.io/ingress-nginx/deploy/
-ref: https://qiita.com/prodigy413/items/b26bac84bbb4555ac8f0
-```
-$ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-$ helm repo update
 
-$ helm search repo ingress-nginx/ingress-nginx
-$ kubectl create ns ingress-system
-$ helm install nginx-ingress ingress-nginx/ingress-nginx -n ingress-system # --set "controller.extraArgs.enable-ssl-passthrough=true"
-$ helm list -n ingress-system
-kubectl get deploy -n ingress-system
-kubectl get pod -n ingress-system
-kubectl get sa -n ingress-system
 
-```
+
+
 ## kubernetes dashboard UI
 pending below.
 
