@@ -13,15 +13,15 @@
 - hosts: workers
   become: true
   roles:
-    - {role: index_deploy, when: 0}
+    - {role: index_deploy, when: 1}
   vars:
     - homepath: /home/pi
 
-# manifestファイルの転送とapply
+# manifestファイルの転送
 - hosts: masters
   become: true
   roles:
     - {role: k8s_deploy, when: 1}
   vars:
     - homepath: /home/pi
-    - apply: 1
+    # - apply: 1
