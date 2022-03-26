@@ -150,15 +150,3 @@ kubectl proxy
 ```
 access: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
 
-
-## Crush pod Flannel
-ref: https://qiita.com/aki5151/items/172848d403e89f5f4e0f
-なぜか直っていた。なんでだ？一回いろいろリセットしたのが効いた可能性。
-
-## httpsをnginx confに追加した話
-オレオレ証明書を作成
-base64 encode: https://www.en-pc.jp/tech/base64.php
-configmapに貼り付け、confに443を追加
-docker hubにはpullの回数制限があるから注意：https://tech-blog.optim.co.jp/entry/2021/03/10/100000
-manifestでimagePullPolicy: IfNotPresentを入れないと簡単に制限突破してErrImagePullが出る
-keyのpassword readとか言われた：https://qiita.com/kaikusakari/items/29aa22e34c32c4621c10
