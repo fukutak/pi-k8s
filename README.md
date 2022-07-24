@@ -88,65 +88,153 @@ k label node pi-worker1 node-role.kubernetes.io/worker1=pi-worker1
 refs:
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
 
-## WIP: Install ingress-nginx
-ref: https://hawksnowlog.blogspot.com/2021/02/getting-started-kubernetes-nginx-ingress-controller.html
 
-### WIP: 1. install nginx-ingress controller
+## Install MetalLB
+[refs](https://metallb.universe.tf/installation/)
+preparation
 ```
-# nginx ingress controller
-git clone https://github.com/nginxinc/kubernetes-ingress/
-cd kubernetes-ingress/deployments
-git checkout v1.10.0
+kubectl edit configmap -n kube-system kube-proxy
 
-# RBAC
-kubectl apply -f common/ns-and-sa.yaml
-kubectl apply -f rbac/rbac.yaml
-kubectl apply -f rbac/ap-rbac.yaml
-
-# nginx
-kubectl apply -f common/default-server-secret.yaml
-kubectl apply -f common/nginx-config.yaml
-kubectl apply -f common/ingress-class.yaml
-
-# カスタムリソース共通
-kubectl apply -f common/crds/k8s.nginx.org_virtualservers.yaml
-kubectl apply -f common/crds/k8s.nginx.org_virtualserverroutes.yaml
-kubectl apply -f common/crds/k8s.nginx.org_transportservers.yaml
-kubectl apply -f common/crds/k8s.nginx.org_policies.yaml
-kubectl apply -f common/crds/k8s.nginx.org_globalconfigurations.yaml
-
-# ingress controllerのデプロイ
-kubectl apply -f deployment/nginx-ingress.yaml
-kubectl apply -f daemon-set/nginx-ingress.yaml
-
-# serviceのデプロイ
-kubectl create -f service/nodeport.yaml
-```
-確認
-```
-pi@pi-master:~/kubernetes-ingress/deployments $ kubectl get svc -n nginx-ingress
-NAME            TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
-nginx-ingress   NodePort   10.102.173.144   <none>        80:30586/TCP,443:30780/TCP   10s
-pi@pi-master:~/kubernetes-ingress/deployments $ kubectl get pods --namespace=nginx-ingress
-NAME                            READY   STATUS    RESTARTS   AGE
-nginx-ingress-5bkl7             0/1     Running   0          40s
-nginx-ingress-dfbd55d95-9twn9   0/1     Running   1          43s
-nginx-ingress-phqxk             0/1     Running   1          40s
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+mode: "ipvs"
+ipvs:
+  strictARP: true
 ```
 
-### 2. create ingress resource
+<!-- [refs](https://kimama.cloud/2020/08/02/raspi-de-k8s/)
+[refs](https://blog.framinal.life/entry/2020/04/16/022042) -->
+On Master node
+```
+$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
+$ kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+```
+setting local IP addresses for use
+```
+$ vi metallb.config.yaml
 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 192.168.3.200-192.168.3.205
 
-
+$ kubectl apply -f metallb.config.yaml
+```
 
 
 ## kubernetes dashboard UI
-pending below.
-
-in master node. (https://kubernetes.io/ja/docs/tasks/access-application-cluster/web-ui-dashboard/)
+[ref](https://kimama.cloud/2020/08/02/raspi-de-k8s-2/)
+Install kubernetes dashboard
 ```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
-kubectl proxy
+wget https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml
 ```
-access: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+Edit service type LoadBalancer
+```
+vi recommended.yaml
 
+ kind: Service 
+ apiVersion: v1 
+ metadata: 
+   labels: 
+     k8s-app: kubernetes-dashboard 
+   name: kubernetes-dashboard 
+   namespace: kubernetes-dashboard 
+ spec: 
+   ports: 
+     - port: 443 
+       targetPort: 8443 
+   selector: 
+     k8s-app: kubernetes-dashboard 
++  type: LoadBalancer
+```
+apply
+```
+kubectl apply -f recommended.yaml
+```
+
+## Install kubernetes metrics server
+[ref](https://qiita.com/yyojiro/items/febfaeadabd2fe8eed08)
+```
+pi-k8s$ wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+$ vi components.yaml
+```
+Edit bellow two lines
+```
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: metrics-server
+  name: metrics-server
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      k8s-app: metrics-server
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        k8s-app: metrics-server
+    spec:
+      containers:
+        - args:
+            - --cert-dir=/tmp
+            - --secure-port=4443
++           - --kubelet-insecure-tls
++           - --kubelet-preferred-address-types=InternalDNS,InternalIP,ExternalDNS,ExternalIP,Hostname
+            # - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+```
+deploy metrics server
+```
+kubectl apply -f components.yaml
+```
+
+## Create token to login
+```
+$ vi admin-user.yaml
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+---
+
+$ kubectl apply -f admin-user.yaml
+```
+Comfirm token
+```
+$ kubectl describe secret -n kubernetes-dashboard $(kubectl get secret -n kubernetes-dashboard | grep admin-user | awk '{print $1}') | grep ^token:
+```
+Comfirm endpoint LB in kubernetes-dashboard
+```
+pi@pi-master:~ $ kubectl get service -n kubernetes-dashboard
+NAME                        TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)         AGE
+dashboard-metrics-scraper   ClusterIP      10.103.16.90   <none>          8000/TCP        11h
+kubernetes-dashboard        LoadBalancer   10.106.23.6    192.168.3.200   443:31629/TCP   11h
+``
+Access `https://192.168.3.200`
