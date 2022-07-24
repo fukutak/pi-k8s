@@ -4,7 +4,7 @@
 - hosts: cluster_nodes
   become: true
   roles:
-    - { role: setup, when: 0 }
+    - { role: setup, when: 1 }
     - { role: k8s_prepare, when: 0 }
   vars:
     - homepath: /home/pi
@@ -13,7 +13,7 @@
 - hosts: workers
   become: true
   roles:
-    - {role: index_deploy, when: 1}
+    - { role: index_deploy, when: 0 }
   vars:
     - homepath: /home/pi
 
@@ -21,7 +21,6 @@
 - hosts: masters
   become: true
   roles:
-    - {role: k8s_deploy, when: 1}
+    - { role: k8s_deploy, when: 0 }
   vars:
     - homepath: /home/pi
-    # - apply: 1

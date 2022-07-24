@@ -1,18 +1,27 @@
 # Let's make kubernetes cluster using raspberry-pi
 ## Construction
 - raspberry pi 4 model 8GB * 1 (for control plane)
+  - pi-master
 - raspberry pi 4 model 4GB * 2 (for worker)
+  - pi-worker1
+  - pi-worker2
 ## first raspi setup
 ```
-raspi-config
+sudo raspi-config
+```
+bellow settings, kubernetes cluster needs unique host name each nodes.
+```
 ---
 change hostname
 expand memory
 set localization
 ---
+```
+reboot after settings
+```
 sudo reboot
 ```
-ssh after reboot again
+edit cmdline.txt
 ```
 sudo nano /boot/cmdline.txt
 ---append below---
@@ -27,8 +36,11 @@ memory	6	94	1
 ```
 
 ## Ansible
+```
+git clone https://github.com/fukutak/k8s.git
+```
 ### roles: setup
-set up sshd_config and put key to ssh for each nodes.
+Set up sshd_config and put key to ssh for each nodes.
 - set ssh pub key to authorized_keys
 - set ssh priv key to ssh each nodes
 - modify sshd_config
@@ -36,14 +48,27 @@ set up sshd_config and put key to ssh for each nodes.
   - off passwd auth.
 - add nodes in /etc/hosts to ssh each nodes
 
+### prepare for setup
+create ssh key and edit `inventory/inventory.yml` in host name.
+add ssh key to `ansible/roles/setup/files/authorized_keys`
+
 ### roles: k8s_prepare
 - swap off required [k8s setup](https://kubernetes.io/ja/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 - install docker as CRI
 - install kubeadm, kubelet, kubectl
 
+### Edit playbook.yml
+In `ansible/playbook.yml`, comfirm `when`.
+```
+- hosts: cluster_nodes
+  become: true
+  roles:
+    - { role: setup, when: 1 }
+```
+Set `when: 1` in setup role and others `when: 0`.
+
 ### Usage
 ```
-git clone https://github.com/fukutak/k8s.git
 cd ansible
 ansible-playbook  -i inventory/inventory.yml playbook.yml
 ```
@@ -236,5 +261,5 @@ pi@pi-master:~ $ kubectl get service -n kubernetes-dashboard
 NAME                        TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)         AGE
 dashboard-metrics-scraper   ClusterIP      10.103.16.90   <none>          8000/TCP        11h
 kubernetes-dashboard        LoadBalancer   10.106.23.6    192.168.3.200   443:31629/TCP   11h
-``
+```
 Access `https://192.168.3.200`

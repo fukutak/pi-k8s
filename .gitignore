@@ -1,2 +1,3 @@
 ansible/roles/settings/files/
 ansible/roles/index_deploy/files
+ansible/roles/setup/files/authorized_keys
