@@ -42,27 +42,27 @@ data:
   tls.key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQ0KTUlJRXBRSUJBQUtDQVFFQXpaWCttSEtZMnVrOTVpZkdKRkNoWkMyaHhUZlNYYythazZyL0FJd04yeUw4dFF1Rg0KbksyN1N0bkc3MnJWd1drbktPNkZGbjlwUUpDVjZELzlmZjBZQ2ZBZit3WmhBRlNHNUo2clV0cEtpdlBTUjVxUw0KYXROVk1XeE55VXVuRDhzTlJtYklWT3RqY2YrTkRWMGJRcndnQU5IOFRxSzFjTEpaaXBUOFRXSEIrWS9IN1lzbA0KYXlwVm9Cai9LaUJnYWJnc0ZmK1hrazZmOGNWclUwMWZtZmVXc2Y4bTFXdkJkelhaSUJLcUEwOUM0SWJPMVViLw0KOWRveFdWR2d4dElNYkJCSVN1QmM5QWpjV1RnTXRNVlduWWZRb1k2ZTZudE5mQUxOcDNyYVlFeGtjZ2c2Y1pQTQ0KRE1VSWp3bzZmVldtTFF5WmlGVkF5Wmt5RnlrK3RPd1prYjRybFFJREFRQUJBb0lCQVFEQmd3WjZpS1BJcXZOUQ0KeU8rQkQwUmEvM2plSW9VcE9GalAxb3pnL3ZPcjZXcmxIMHROQjFyY1FkRTNXdUNKaFdrTzVqVHYwRTVLTDg1cg0KSnBCOUh0YVp4Q1RXTEZMeDlKNWtZOVh2enZtTGdhWFZNSEhSaThzTkVsekZ0U2d6ZlhXcFp1WDZ5UFo2UDRtTg0Kb3E0ZVN1WDAzN01XY2FGSHl4anRrUDlMOTFDV2prZVNCT29rOFhzNEtoVFgxcXFhMWtzclprcUJvTFBWNjJLLw0KbkdCY0ZpNjFRVFpYZ01pYzZSV202T1F0Y3BwKzJJbWNaSVdmL1QxandBZWlJMzcxdGtFZmJXTmV1Yzlpd3doVg0KUE5NaDN2eEhmV0FiZkJjOUVQS1B3L1RFRDlpbzJla2RHaTVISXM3WlZMWFZ1YkQvOVJ6TzZJY3E2M0dZVURUcQ0KUkpsbWhQbWhBb0dCQVBMeWI4bW9YYkJDK1NLZ2lpVTJmWXF6b3JPWjRnNnczVVFZVEZ0M0h2V1ZCQ3dxYWxsOA0KZFdhT2UrTnk0dEtMR05pVm5XTlBCKzJLY0RoZTJEVUVseThWbldoM2RLUVY0UlNjdDFEYWQ4dVE3VE5KSWJ4eA0KbjNHS1psQ1VUTmFSNXVIUHV3MVVmSHB2RTd1UkFvZDdCVmdRblpTbzg0bFhHdXd6cXRUaHYrc3pBb0dCQU5paA0KcnJhRktwbHdPYXQxL0JPZXlvWkpXNUk3NTY1WGhORnVWWEV4cUw2TDkwLzBQekNMMDJUS2Y2ZjJGY0Z2QTMxaA0KOXhjODc5SzZKRUhhVFNyTHZ4N2xEdU1LT0JENElocGF3NWFNdE55emJ1U0o1TXNSZFhSNm05K0VkNy9XYk9aVQ0Kdm9EbHNoSXNzbGRPWmNBQkRQSTh4RHJOemMvRzY3VDJ2YmVrejg0WEFvR0JBTldSb2d2WVltUHN2QzVnaXBDaw0KRWtDNEliTlk5NHlLbGppaVU1MmtYaWJ0VkxtdW44Y0N6Z0hXQjdxdTZBN0dFSlYxRU9LWU94UHF1elFTekdYdg0KSHloWkRBTWwzL2ZPOUFxMnFiLytEWWw2WWNyUDQwUlJiaVRWMFpQTWlxK2xteDJ2QzNSd2JPMEVjSWhXdGE1Nw0KeXZyYndHdExDcXdWVXFtSjBnZEtYUGhaQW9HQUYvaXNNSjVEdkg3aW9zcUhmbFJQN05RcFFlRkhIYytwYnROYQ0KdVEvWnNGd2tuY0JWVGJYclNuZnQ4RlFXekRUUW1ndEJJRjBwM0pPa2QzVUVuUHUyeG1CcWFVMDBMd3lHR1l4NQ0Kb0NzcHlGSkNyeDlqSmVWa3JlTHpaS1J2NjlaNmJuSnFNakU0cHpJeStkNCsvQ1FobnB5Q3lrOER1ejR6enU2Tw0KeDhlQkJ6a0NnWUVBOFNoNzBiS2tOUVF6UGtVb3FTN21ua0tqQW5mQmZ6cU5kWWVqNVN5TU5SMzJ4S0JkZXNSRQ0KRFowZyt5dVFrSjJ2OE5SMEhHRmFDenVMZFZOMHRJUVhGN2tYZDg3VGdmWU1YemZMR1RIdzBVVGtMWEo5QzdNSg0KUnVzVDlEcUttR0RtaVV0VmM1Z2J4YTVZQi92MlJYM1R0YnMwUHR2MnJ6RHpRK2lTa0tFT2x0bz0NCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0t"
 
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-metallb
-  labels:
-    run: nginx-metallb
-spec:
-  type: NodePort
-  ports:
-  - port: 80
-    targetPort: 80
-    nodePort: 30000
-    protocol: TCP
-    name: http
-  - port: 443
-    targetPort: 443
-    nodePort: 30001
-    protocol: TCP
-    name: https
-  selector:
-    run: nginx-metallb
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: nginx-metallb
+#   labels:
+#     run: nginx-metallb
+# spec:
+#   type: NodePort
+#   ports:
+#   - port: 80
+#     targetPort: 80
+#     nodePort: 30000
+#     protocol: TCP
+#     name: http
+#   - port: 443
+#     targetPort: 443
+#     nodePort: 30001
+#     protocol: TCP
+#     name: https
+#   selector:
+#     run: nginx-metallb
 ---
 # NginxのconfigMapの作成
 apiVersion: v1
@@ -94,32 +94,34 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    app: nginx-metallb
   name: nginx-metallb
 spec:
   selector:
     matchLabels:
-      run: nginx-metallb
+      app: nginx-metallb
   replicas: 4
   template:
     metadata:
       labels:
-        run: nginx-metallb
+        app: nginx-metallb
     spec:
       containers:
         - name: nginxhttps
           imagePullPolicy: IfNotPresent
           image: nginx
           ports:
-          - containerPort: 443
-          - containerPort: 80
+            # - containerPort: 443
+            - containerPort: 80
           volumeMounts:
-          - name: conf
-            mountPath: /etc/nginx/conf.d/
-          - name: docrootc
-            mountPath: /usr/share/nginx/html
-            readOnly: true
-          - name: secret-volume
-            mountPath: /etc/nginx/conf.d/ssl/
+            - name: conf
+              mountPath: /etc/nginx/conf.d/
+            - name: docrootc
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+            - name: secret-volume
+              mountPath: /etc/nginx/conf.d/ssl/
       volumes:
         - name: secret-volume
           secret:
