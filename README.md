@@ -97,12 +97,12 @@ Then you can join any number of worker nodes by running the following on each as
 
 kubeadm join <control-plane-host>:<control-plane-port> --token <token> --discovery-token-ca-cert-hash sha256:<hash>
 ```
-install flannel [[ref](https://qiita.com/kentarok/items/6e818c2e6cf66c55f19a)]
+### install flannel [[ref](https://qiita.com/kentarok/items/6e818c2e6cf66c55f19a)]
 ```
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
 kubectl get pods --all-namespaces | grep coredns # confirm coredns is running.
 ```
-join worker nodes to k8s cluster!
+### join worker nodes to k8s cluster!
 ```
 sudo kubeadm join <control-plane-host>:<control-plane-port> --token <token> --discovery-token-ca-cert-hash sha256:<hash>
 ```
@@ -154,7 +154,6 @@ data:
 
 $ kubectl apply -f metallb.config.yaml
 ```
-
 
 ## kubernetes dashboard UI
 [ref](https://kimama.cloud/2020/08/02/raspi-de-k8s-2/)
