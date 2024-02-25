@@ -4,8 +4,8 @@
 - hosts: cluster_nodes
   become: true
   roles:
-    - { role: setup, when: 1 }
-    - { role: k8s_prepare, when: 0 }
+    - { role: setup, when: 0 }
+    - { role: k8s_prepare, when: 1 }
   vars:
     - homepath: /home/pi
 

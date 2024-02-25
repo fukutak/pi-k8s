@@ -6,21 +6,21 @@
     - systemctl stop dphys-swapfile
     - systemctl disable dphys-swapfile
 
-- name: docker install specific version 19.03.11 # https://docs.docker.com/engine/install/ubuntu/
-  apt:
-    name: '{{ item }}'
-    state: "present"
-    update_cache: yes
-    force: yes
-  with_items:
-    - docker-ce={{docker_version}}
-    - docker-ce-cli={{docker_version}}
-    - containerd.io
-  notify:
-    - docker status
-- name: add pi to docker group
-  user: name=pi append=yes groups=docker
-  become: true
+# - name: docker install specific version 19.03.11 # https://docs.docker.com/engine/install/ubuntu/
+#   apt:
+#     name: '{{ item }}'
+#     state: "present"
+#     update_cache: yes
+#     force: yes
+#   with_items:
+#     - docker-ce={{docker_version}}
+#     - docker-ce-cli={{docker_version}}
+#     - containerd.io
+#   notify:
+#     - docker status
+# - name: add pi to docker group
+#   user: name=pi append=yes groups=docker
+#   become: true
 - name: docker restarted
   service:
     name: docker
